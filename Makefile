@@ -6,6 +6,15 @@ PUBSUB_DIR = $(SRC_DIR)/pubsub_cpp
 BUILD_DIR = ./build
 
 #
+# listener
+#
+LISTENER_SRCS += \
+	$(PUBSUB_DIR)/subscriber.cpp \
+	$(SRC_DIR)/listener.cpp \
+
+LISTENER_OBJS := $(subst $(SRC_DIR),$(BUILD_DIR),$(patsubst %.cpp,%.o,$(LISTENER_SRCS)))
+
+#
 # speaker
 #
 SPEAKER_SRCS += \
@@ -41,7 +50,10 @@ CC = @echo '   ' CC $@; g++
 LD = @echo '   ' LD $@; g++
 endif
 
-all: speaker
+all: listener speaker
+
+listener: $(LISTENER_OBJS)
+	$(LD) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
 
 speaker: $(SPEAKER_OBJS)
 	$(LD) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
